@@ -5,11 +5,17 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "build": "npx babel src --out-dir lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10"
   }
 }
