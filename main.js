@@ -1,27 +1,48 @@
-import { Mox, State, Flex, Div } from "./src/mox.js";
+import { Mox, State, Flex, Div, Input } from "./src/mox.js";
 
-const Title = (num) => Div(`you click ${num} times`);
-const Options = (state) =>
-  Flex(
-    Div("-").on("click", () => {
-      state.setValue((o) => o - 1);
+const CustomInput = (v) => Input(v);
+const Main = State((state) => () => {
+  let [val, todos] = state("", []);
+
+  return Flex(
+    CustomInput(val.value).onChange((e) => {
+      const todosValue = JSON.parse(JSON.stringify(todos.value));
+      todosValue.unshift(e);
+      todos.value = todosValue;
+      val.value = "";
     }),
-    Div("+").on("click", () => {
-      state.setValue((o) => o + 1);
-    })
+    Flex(
+      ...todos.value.map((e, index) =>
+        Flex(
+          Div(e),
+          Div("x").on("click", () => {
+            todos.value = [];
+          })
+        ).style({
+          width: "100%",
+          "justify-content": "space-between",
+        })
+      )
+    )
+      .style({ width: "100%" })
+      .flexFlow("column"),
+    Div("x").on("click", () => {})
   )
-    .style({ "justify-content": "space-between" })
-    .flexFlow("row nowrap");
+    .columned()
+    .centered();
+});
 const app = State((state) => () => {
   const times = state(0);
-  return Flex(
-    Title(times.value),
-    Options(times),
-    ...new Array(times.value + 1).fill(0).map(() => Div("hhh"))
-  )
-    .style({ width: "100%", "font-size": `${times.value * 10 + 10}px` })
-    .flexFlow("column")
-    .class(`class-${times.value}`);
+  return Flex(Div("Todos"), Main(), Div("Powered by Mox.js"))
+    .centered()
+    .flexFlow("column");
+  // const b = state(true);
+  // return b.value
+  //   ? Div("123").on("click", () => {
+  //       console.log("s");
+  //       b.setValue(false);
+  //     })
+  //   : Input("");
 });
 
 new Mox().Render("app", app);

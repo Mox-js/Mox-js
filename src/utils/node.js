@@ -6,9 +6,24 @@ class Node {
     this._class = "";
     this._style = "";
     this.events = [];
+    this.selfEvents = {};
   }
   append(node) {
     this.children.push(node);
+  }
+  style(style) {
+    Object.entries(style).forEach(([k, v]) => {
+      this._style[k] = v;
+    });
+    return this;
+  }
+  class(c) {
+    this._class = c;
+    return this;
+  }
+  on(event, callback) {
+    this.events.push({ event, callback });
+    return this;
   }
 }
 export default Node;

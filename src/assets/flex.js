@@ -15,17 +15,15 @@ class _Flex extends Node {
     this._style["flex-flow"] = style.join(" ");
     return this;
   }
-  class(c) {
-    this._class = c;
+  columned() {
+    this._style["flex-flow"] = "column nowrap";
     return this;
   }
-  style(style) {
-    Object.entries(style).forEach(([k, v]) => {
-      this._style[k] = v;
-    });
+  centered() {
+    this._style["justify-content"] = "center";
+    this._style["align-items"] = "center";
     return this;
   }
-  on(event, fn) {}
 }
 function Flex(...args) {
   return new _Flex(...args);
