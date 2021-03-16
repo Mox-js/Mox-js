@@ -1,5 +1,5 @@
 import Node from "../utils/node.js";
-class _Flex {
+class _Flex extends Node {
   constructor(...args) {
     const map = args.map((e) => {
       if (typeof e === "string" || typeof e === "number") {
@@ -8,21 +8,20 @@ class _Flex {
         return e;
       }
     });
-    const node = new Node("div", map);
-    this.node = node;
-    this.style = { display: "flex" };
+    super("div", map);
+    this._style = { display: "flex" };
   }
   flexFlow(...style) {
-    this.style["flex-flow"] = style.join(" ");
+    this._style["flex-flow"] = style.join(" ");
     return this;
   }
   class(c) {
-    this.class = c;
+    this._class = c;
     return this;
   }
-  styles(style) {
+  style(style) {
     Object.entries(style).forEach(([k, v]) => {
-      this.style[k] = v;
+      this._style[k] = v;
     });
     return this;
   }

@@ -10,14 +10,18 @@ const Options = (state) =>
       state.setValue((o) => o + 1);
     })
   )
-    .styles({ "justify-content": "space-between" })
+    .style({ "justify-content": "space-between" })
     .flexFlow("row nowrap");
 const app = State((state) => () => {
   const times = state(0);
-  return Flex(Title(times.value), Options(times))
-    .styles({ width: "100%", "justify-content": "center" })
+  return Flex(
+    Title(times.value),
+    Options(times),
+    ...new Array(times.value + 1).fill(0).map(() => Div("hhh"))
+  )
+    .style({ width: "100%", "font-size": `${times.value * 10 + 10}px` })
     .flexFlow("column")
-    .class("box");
+    .class(`class-${times.value}`);
 });
 
 new Mox().Render("app", app);

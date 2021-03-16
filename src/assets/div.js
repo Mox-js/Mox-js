@@ -1,31 +1,26 @@
 import Node from "../utils/node.js";
-import generateClassName from "../utils/generateClassName";
-class _Div {
+class _Div extends Node {
   constructor(...args) {
-    const node = new Node("div");
+    super("div");
     args.forEach((e) => {
       if (typeof e === "string" || typeof e === "number") {
-        node.append(new Node("text", [e]));
+        this.append(new Node("text", [e]));
       } else {
-        node.append(e.node);
+        this.append(e.node);
       }
     });
-    this.node = node;
-    this.style = {};
-    this.class = "";
-    this.events = [];
   }
-  Pseudo(style) {
-    if (!this.class) this.class = generateClassName();
-  }
-  styles(style) {
+  // Pseudo(style) {
+  //   if (!this.class) this.class = generateClassName();
+  // }
+  style(style) {
     Object.entries(style).forEach(([k, v]) => {
-      this.style[k] = v;
+      this._style[k] = v;
     });
     return this;
   }
   class(c) {
-    this.class = c;
+    this._class = c;
     return this;
   }
   on(event, callback) {
