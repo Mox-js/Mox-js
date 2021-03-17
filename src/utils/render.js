@@ -7,6 +7,7 @@ function Render(id, c) {
   oldTree = render(document.getElementById(id), getCompTree(c));
 }
 function reRender() {
+  //resetStateIndex();
   newTree = getCompTree(rootC);
   const stringifyStyle = function (s) {
     if (typeof s === "object") {
@@ -22,13 +23,19 @@ function reRender() {
   };
   const travel = function (nt, ot) {
     if (nt.tag !== ot.tag) {
-      const nx = render(ot.$el, nt);
+      const nx = render(document.createElement(nt.tag), nt);
+      nx.$parent = ot.$parent;
       (ot.$parent.$el ?? ot.$parent).replaceChild(nx.$el, ot.$el);
+      if (ot.$parent.$children) {
+        const index = ot.$parent.$children.findIndex((e) => e.$key === ot.$key);
+        ot.$parent.$children[index] = nx;
+      }
       ot = nt;
+      return;
     }
-    if (ot.tag === "text" && ot.$el.textContent !== nt.children[0]) {
-      ot.$el.textContent = nt.children[0];
-      ot.children[0] = nt.children[0];
+    if (ot.tag === "text" && ot.$el.textContent !== nt.$children[0]) {
+      ot.$el.textContent = nt.$children[0];
+      ot.$children[0] = nt.$children[0];
       return;
     }
 
@@ -49,24 +56,23 @@ function reRender() {
       }
       return;
     }
-    const otChildLength = ot.children.length;
-    for (let i = 0; i < nt.children.length && i < otChildLength; i++) {
-      travel(nt.children[i], ot.children[i]);
+    const otChildLength = ot.$children.length;
+    for (let i = 0; i < nt.$children.length && i < otChildLength; i++) {
+      travel(nt.$children[i], ot.$children[i]);
     }
-    if (nt.children.length > otChildLength) {
-      for (let i = otChildLength; i < nt.children.length; i++) {
-        render(ot, nt.children[i]);
-        ot.children.push(nt.children[i]);
+    if (nt.$children.length > otChildLength) {
+      for (let i = otChildLength; i < nt.$children.length; i++) {
+        render(ot, nt.$children[i]);
+        ot.$children.push(nt.$children[i]);
       }
-    } else if (nt.children.length < otChildLength) {
-      for (let i = otChildLength - 1; i >= nt.children.length; i--) {
+    } else if (nt.$children.length < otChildLength) {
+      for (let i = otChildLength - 1; i >= nt.$children.length; i--) {
         if (ot.events.length > 0)
           ot.events.forEach(({ event, callback }) => {
-            ot.children[i].$el.removeEventListener(event, callback);
-            console.log(ot.events);
+            ot.$children[i].$el.removeEventListener(event, callback);
           });
-        ot.$el.removeChild(ot.children[i].$el);
-        ot.children.pop();
+        ot.$el.removeChild(ot.$children[i].$el);
+        ot.$children.pop();
       }
     }
   };
@@ -80,10 +86,10 @@ function render(id, c) {
   const comp = getCompTree(c);
   const node = comp;
   let child_root;
-  comp.$parent = root;
+  comp.$parent = id;
   comp.$key = getKey();
   if (node.tag === "text") {
-    child_root = document.createTextNode(node.children[0]);
+    child_root = document.createTextNode(node.$children[0]);
     root.appendChild(child_root);
     comp.$el = child_root;
   } else {
@@ -97,8 +103,7 @@ function render(id, c) {
     }
     if (Object.keys(comp.selfEvents).length > 0) {
       for (let event in comp.selfEvents) {
-        child_root[event] = comp.selfEvents[event]; //.bind(this, comp.$el.value);
-        //console.log(comp);
+        child_root[event] = comp.selfEvents[event];
       }
     }
     if (comp._style && Object.keys(comp._style).length > 0) {
@@ -114,15 +119,16 @@ function render(id, c) {
     }
     if (node.tag === "input") {
       child_root.value = node._value;
-      //return;
     }
-    console.log(id);
-    console.log(root, node, "root");
-    if (!root.$el) root.appendChild(child_root);
-    const children = node.children;
-    if (!children || children.length === 0) {
+    if (!root.$el) {
+      root.appendChild(child_root);
     } else {
-      children.map((e) => render(child_root, e));
+      root.appendChild(child_root);
+    }
+    const $children = node.$children;
+    if (!$children || $children.length === 0) {
+    } else {
+      $children.map((e) => render(comp, e));
     }
   }
   return comp;

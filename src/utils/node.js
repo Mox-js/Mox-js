@@ -1,7 +1,7 @@
 class Node {
-  constructor(tag, children) {
+  constructor(tag, $children) {
     this.tag = tag ?? "div";
-    this.children = children ?? [];
+    this.$children = $children ?? [];
     this._id = "";
     this._class = "";
     this._style = "";
@@ -9,7 +9,7 @@ class Node {
     this.selfEvents = {};
   }
   append(node) {
-    this.children.push(node);
+    this.$children.push(node);
   }
   style(style) {
     Object.entries(style).forEach(([k, v]) => {
@@ -23,6 +23,10 @@ class Node {
   }
   on(event, callback) {
     this.events.push({ event, callback });
+    return this;
+  }
+  onClick(callback) {
+    this.events.push({ event: "click", callback });
     return this;
   }
 }
