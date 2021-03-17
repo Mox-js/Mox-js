@@ -1,14 +1,14 @@
 import Node from "../utils/node.js";
 class _Div extends Node {
   constructor(...args) {
-    super("div");
-    args.forEach((e) => {
+    const map = args.map((e) => {
       if (typeof e === "string" || typeof e === "number") {
-        this.append(new Node("text", [e]));
+        return new Node("text", [e]);
       } else {
-        this.append(e.node);
+        return e;
       }
     });
+    super("div", map);
   }
   // Pseudo(style) {
   //   if (!this.class) this.class = generateClassName();

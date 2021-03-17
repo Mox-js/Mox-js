@@ -4,7 +4,7 @@ class Node {
     this.$children = $children ?? [];
     this._id = "";
     this._class = "";
-    this._style = "";
+    this._style = {};
     this.events = [];
     this.selfEvents = {};
   }

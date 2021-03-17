@@ -22,6 +22,7 @@ function reRender() {
     return ["input", "img", "text"].includes(tag);
   };
   const travel = function (nt, ot) {
+    if (!nt?.tag) return;
     if (nt.tag !== ot.tag) {
       const nx = render(document.createElement(nt.tag), nt);
       nx.$parent = ot.$parent;
@@ -33,9 +34,11 @@ function reRender() {
       ot = nt;
       return;
     }
-    if (ot.tag === "text" && ot.$el.textContent !== nt.$children[0]) {
-      ot.$el.textContent = nt.$children[0];
-      ot.$children[0] = nt.$children[0];
+    if (ot.tag === "text") {
+      if (ot.$el.textContent !== nt.$children[0]) {
+        ot.$el.textContent = nt.$children[0];
+        ot.$children[0] = nt.$children[0];
+      }
       return;
     }
 
