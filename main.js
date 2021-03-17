@@ -2,10 +2,11 @@ import { Mox, State, Flex, Div, Input } from "./src/mox.js";
 
 const CustomInput = (v) => Input(v);
 const Main = State((state) => () => {
-  let [val, todos] = state("", []);
+  let [val, todos, id] = state("", [], 0);
   return Flex(
     CustomInput(val.value).onChange((e) => {
-      todos.value.push({ name: e, checked: false });
+      todos.value.push({ name: e, checked: false, id: id.value });
+      id.value += 1;
       val.value = "";
     }),
     Flex(
@@ -13,17 +14,20 @@ const Main = State((state) => () => {
         Flex(
           Div(e.name).style({ color: e.checked ? "red" : "gray" }),
           Div("x").onClick(() => {
-            todos.value = todos.value.filter((e, i) => i !== index);
+            todos.value = todos.value.filter((v, i) => i !== index);
+            console.log(todos.value);
           })
         )
           .onClick(() => {
-            todos.value = todos.value.map((e, i) => {
-              if (i === index) {
-                e.checked = !e.checked;
-                return e;
+            todos.value = todos.value.map((v, i) => {
+              let vv = v;
+              if (v.id === e.id) {
+                vv.checked = !vv.checked;
+                return vv;
               }
-              return e;
+              return v;
             });
+            console.log(e, todos.value);
           })
           .style({
             width: "100%",

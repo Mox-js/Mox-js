@@ -18,6 +18,7 @@ class _State {
 const State = function (fn) {
   const values = [];
   let states = null;
+
   const _state = function (...args) {
     if (states) return states;
     if (args.length === 1) {
@@ -40,7 +41,8 @@ const State = function (fn) {
     );
     return states;
   };
-  return fn(_state);
+  const res = fn(_state);
+  return res;
 };
 
 export default State;

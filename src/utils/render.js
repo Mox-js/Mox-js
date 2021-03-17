@@ -59,6 +59,18 @@ function reRender() {
       }
       return;
     }
+    //console.log(ot.events, nt.events);
+    // ot.events.forEach(({ event, callback }, index) => {
+    //   if (callback !== nt.events[index].callback) {
+    //     ot.$el.removeEventListener(event, callback);
+    //     ot.$el.addEventListener(event, function () {
+    //       return nt.events[index].callback.apply(this);
+    //     });
+    //   }
+    // });
+    // for (let event in ot.selfEvents) {
+    //   ot.$el[event] = nt.selfEvents[event] ?? null;
+    // }
     const otChildLength = ot.$children.length;
     for (let i = 0; i < nt.$children.length && i < otChildLength; i++) {
       travel(nt.$children[i], ot.$children[i]);
